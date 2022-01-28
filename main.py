@@ -15,7 +15,7 @@ def main() -> None:
     map_height = 45
 
     tileset = tcod.tileset.load_tilesheet(
-        "C:/git/python/UltimateFrisbeeHunter\example.png", 32, 8, tcod.tileset.CHARMAP_TCOD
+        "example.png", 32, 8, tcod.tileset.CHARMAP_TCOD
         )
 
     event_handler = EventHandler()
