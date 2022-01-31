@@ -1,3 +1,4 @@
+from html import entities
 from typing import Set, Iterable, Any
 
 from tcod.context import Context
@@ -22,6 +23,10 @@ class Engine:
                 continue
             
             action.perform(self, self.player)
+            
+        for ent in self.entities:
+            print(ent)
+           # ent.action.perform(self, ent)
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)
