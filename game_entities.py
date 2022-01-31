@@ -18,18 +18,9 @@ class Entity:
 
 class Frisbee(Entity):
     def __init__(self, action:Action, x:int, y:int, dx:int, dy:int, char: str, color: Tuple[int, int, int]):
-        super().__init__()
-        print("here")
-        self.x = x
-        self.y = y
+        super().__init__(x=x,y=y,char=char,color=color)
         self.dx = dx
         self.dy = dy
-        self.char = char
-        self.color = color
         self.action = action
         
-    def move(self) -> None:
-        # Move the entity by a given amount
-        self.x += self.dx
-        self.y += self.dy
-
+    

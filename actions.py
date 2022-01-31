@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
     from engine import Engine
-    from entity import Frisbee, Entity
+    from game_entities import Entity
 
 class Action:
     def perform(self, engine: Engine, entity: Entity) -> None:
@@ -49,20 +48,18 @@ class ProjectileAction(Action):
         dest_y = entity.y + entity.dy
 
         if not engine.game_map.in_bounds(dest_x, dest_y) or not engine.game_map.tiles["walkable"][dest_x,dest_y]:
-            del entity
-            return # Destination out of bounds.
+            engine.remove_entites.add(entity)
+            return # Destination out of bounds, so end projectile
 
-        entity.move(self.dx, self.dy)
+        entity.move(entity.dx, entity.dy)
 
 class ShootAction(Action):
     def __init__(self):
         super().__init__()
 
     def perform(self, engine: Engine, entity: Entity) -> None:
+        from game_entities import Frisbee
         dx = 0
-        dy = 1
-        newAction = Action()
-        newFrisb = Frisbee(newAction, self.x, self.y, dx, dy, "o", [255,255,255])
-        print("here")
+        dy = -1
         projectile = Frisbee(action=ProjectileAction(), x=entity.x, y=entity.y, dx=dx, dy=dy, char="O", color=[128,0,128])
         engine.entities.add(projectile)

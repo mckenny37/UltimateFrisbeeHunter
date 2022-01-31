@@ -4,7 +4,7 @@ from typing import Set, Iterable, Any
 from tcod.context import Context
 from tcod.console import Console
 
-from entity import Entity
+from game_entities import Entity, Frisbee
 from game_map import GameMap
 from input_handlers import EventHandler
 
@@ -14,6 +14,7 @@ class Engine:
         self.event_handler = event_handler
         self.game_map = game_map
         self.player = player
+        self.remove_entites: Set[Entity] = set()
 
     def handle_events(self, events: Iterable[Any]) -> None:
         for event in events:
@@ -25,13 +26,19 @@ class Engine:
             action.perform(self, self.player)
             
         for ent in self.entities:
-            print(ent)
-           # ent.action.perform(self, ent)
+            if isinstance(ent, Frisbee):
+                ent.action.perform(self, ent)
+
+        for ent in self.remove_entites:
+            self.entities.remove(ent)
+        
+        self.remove_entites.clear()
 
     def render(self, console: Console, context: Context) -> None:
         self.game_map.render(console)
         
         for entity in self.entities:
+            #print (entity.char)
             console.print(entity.x, entity.y, entity.char, fg=entity.color)
 
         context.present(console)
