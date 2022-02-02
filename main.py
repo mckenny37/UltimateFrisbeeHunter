@@ -2,7 +2,7 @@
 import tcod
 
 from engine import Engine
-from game_entities import Entity
+from game_entities import Boss, Entity
 from input_handlers import EventHandler
 from procgen import generate_dungeon
 
@@ -24,8 +24,8 @@ def main() -> None:
     event_handler = EventHandler()
 
     player = Entity(int(screen_width/2), int(screen_height/2), "@", (255,255,255))
-    npc = Entity(int(screen_width/2 -5), int(screen_height/2), "@", (255,255,0))
-    entities = {npc, player}
+    boss = Boss(10, int(screen_width/2 -5), int(screen_height/2), "@", (255,255,0))
+    entities = {boss, player}
     
     game_map = generate_dungeon(
         max_rooms = max_rooms,
@@ -33,7 +33,8 @@ def main() -> None:
         room_max_size=room_max_size,
         map_width=map_width,
         map_height=map_height,
-        player=player
+        player=player,
+        boss = boss
     )
         
     engine = Engine(entities=entities, event_handler=event_handler, game_map=game_map, player=player)
@@ -52,7 +53,23 @@ def main() -> None:
             events = tcod.event.wait()
 
             engine.handle_events(events)
-            
+
+            if engine.reset:
+                    boss = Boss(10, int(screen_width/2 -5), int(screen_height/2), "@", (255,255,0))
+                    entities = {boss, player}
+                    
+                    game_map = generate_dungeon(
+                        max_rooms = max_rooms,
+                        room_min_size=room_min_size,
+                        room_max_size=room_max_size,
+                        map_width=map_width,
+                        map_height=map_height,
+                        player=player,
+                        boss = boss                    
+                    )
+                    engine = Engine(entities=entities, event_handler=event_handler, game_map=game_map, player=player)
+
+                    engine.reset = False 
            
 if __name__ == "__main__":
     main()

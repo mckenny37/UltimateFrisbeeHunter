@@ -58,6 +58,7 @@ def generate_dungeon(
     map_width: int,
     map_height: int,
     player: Entity,
+    boss: Entity,
     ) -> GameMap:
     """Generate a new dungeon map."""
     dungeon = GameMap(map_width, map_height)
@@ -89,8 +90,12 @@ def generate_dungeon(
             # Dig out a tunner between this room and the previous one.
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
                 dungeon.tiles[x,y] = tile_types.floor
+
                 
         # Finally, append the new room to the list.
         rooms.append(new_room)
+
+    # The last room is where the boss starts. 
+    boss.x, boss.y = rooms[-1].center
 
     return dungeon

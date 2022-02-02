@@ -17,10 +17,18 @@ class Entity:
 
 
 class Frisbee(Entity):
-    def __init__(self, action:Action, x:int, y:int, dx:int, dy:int, char: str, color: Tuple[int, int, int]):
+    def __init__(self, action:Action, damage:int, x:int, y:int, dx:int, dy:int, char: str, color: Tuple[int, int, int]):
         super().__init__(x=x,y=y,char=char,color=color)
         self.dx = dx
         self.dy = dy
         self.action = action
+        self.damage = damage
+    
+class Boss(Entity):
+    def __init__(self, health:int, x:int, y:int, char: str, color: Tuple[int, int, int]):
+        super().__init__(x=x,y=y,char=char,color=color)
+        self.health = health
+    
+
         
     

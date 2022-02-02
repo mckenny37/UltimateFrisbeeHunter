@@ -1,6 +1,8 @@
 from __future__ import annotations
+from tkinter import Y
 
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from engine import Engine
     from game_entities import Entity
@@ -51,6 +53,15 @@ class ProjectileAction(Action):
             engine.remove_entites.add(entity)
             return # Destination out of bounds, so end projectile
 
+        #Check if there is an enemy in destination, if so then we damage the enemy and remove projectile
+        from game_entities import Boss
+        for enemy in engine.entities:
+            if isinstance(enemy, Boss):
+                if [enemy.x, enemy.y] == [dest_x, dest_y]:
+                    enemy.health -= entity.damage
+                    engine.remove_entites.add(entity)
+
+
         entity.move(entity.dx, entity.dy)
 
 class ShootAction(Action):
@@ -61,5 +72,5 @@ class ShootAction(Action):
         from game_entities import Frisbee
         dx = 0
         dy = -1
-        projectile = Frisbee(action=ProjectileAction(), x=entity.x, y=entity.y, dx=dx, dy=dy, char="O", color=[128,0,128])
+        projectile = Frisbee(action=ProjectileAction(), damage=1, x=entity.x, y=entity.y, dx=dx, dy=dy, char="O", color=[128,0,128])
         engine.entities.add(projectile)
