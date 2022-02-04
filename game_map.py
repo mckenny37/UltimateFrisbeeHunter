@@ -7,12 +7,12 @@ from xml.sax.handler import property_declaration_handler
 import numpy as np  # type: ignore
 from tcod.console import Console
 
-from game_entities import Actor
+from entity import Actor
 import tile_types
 
 if TYPE_CHECKING:
     from engine import Engine
-    from game_entities import Entity
+    from entity import Entity
 
 class GameMap:
     def __init__(

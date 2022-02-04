@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from engine import Engine
-    from game_entities import Entity
+    from entity import Entity
 
 class BaseComponent:
     entity: Entity #Owning entity instance.

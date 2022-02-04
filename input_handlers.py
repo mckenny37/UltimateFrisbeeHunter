@@ -62,7 +62,7 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             self.engine.handle_enemy_turns()
             
             self.reset = True # Reset if no Boss found in entities
-            from game_entities import Frisbee
+            from entity import Frisbee
             for ent in self.engine.game_map.entities:
                 if isinstance(ent, Frisbee):
                     ProjectileAction(ent, ent.dx, ent.dy).perform()

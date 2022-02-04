@@ -4,7 +4,7 @@ from typing import Optional, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from engine import Engine
-    from game_entities import Entity
+    from entity import Entity
 
 class Action:
     def __init__(self, entity: Entity) -> None:
@@ -102,7 +102,7 @@ class ProjectileAction(ActionWithDirection):
 
 class ShootAction(ActionWithDirection):
     def perform(self) -> None:
-        from game_entities import Frisbee
+        from entity import Frisbee
         projectile = Frisbee(damage=1, x=self.entity.x, y=self.entity.y, dx=self.dx, dy=self.dy, char="O", color=[56,0,56])
         projectile.place(self.dx, self.dy, self.engine.game_map)
         self.engine.game_map.entities.add(projectile)
