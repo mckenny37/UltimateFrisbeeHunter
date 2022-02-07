@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List, Tuple
 import numpy as np # type: ignore
 import tcod
 
-from actions import Action, MeleeAction, MovementAction, WaitAction
+from actions import Action, AttackAction, MovementAction, WaitAction
 from components.base_component import BaseComponent
 
 if TYPE_CHECKING:
@@ -62,7 +62,7 @@ class HostileEnemy(BaseAI):
 
         if self.engine.game_map.visible[self.entity.x, self.entity.y]:
             if distance <= 1:
-                return MeleeAction(self.entity, dx, dy).perform()
+                return AttackAction(self.entity, dx, dy).perform()
 
             self.path = self.get_path_to(target.x, target.y)
 
@@ -71,4 +71,21 @@ class HostileEnemy(BaseAI):
             return MovementAction(self.entity, dest_x - self.entity.x, dest_y - self.entity.y).perform()
 
         return WaitAction(self.entity).perform()
-        
+
+class Projectile(BaseAI):
+    def __init__(self, entity: Actor):
+        super().__init__(entity)
+
+    def perform(self) -> None:
+        dest_x = self.entity.x + self.entity.component.dx
+        dest_y = self.entity.y + self.entity.component.dy
+
+        if self.engine.game_map.get_actor_at_location(dest_x,dest_y):
+            #Frisbee found target so attack and then remove frisbee
+            self.engine.game_map.remove_entites.add(self.entity)
+            return AttackAction(self.entity, self.entity.component.dx, self.entity.component.dy).perform()
+        elif not self.engine.game_map.in_bounds(dest_x, dest_y) or not self.engine.game_map.tiles["walkable"][dest_x,dest_y]:
+            self.engine.game_map.remove_entites.add(self.entity)
+            return # Destination out of bounds, so end projectile
+        else:
+            return MovementAction(self.entity, self.entity.component.dx, self.entity.component.dy).perform()

@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import copy
 from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING
-from actions import Action
+from components.base_component import BaseComponent
+
+from render_order import RenderOrder
 
 if TYPE_CHECKING:
     from components.ai import BaseAI
@@ -27,6 +29,7 @@ class Entity:
         color: Tuple[int, int, int] = (255,255,255),
         name: str = "<Unnamed>",
         blocks_movement: bool = False,
+        render_order: RenderOrder = RenderOrder.CORPSE,
     ):
         
         self.x = x
@@ -35,6 +38,7 @@ class Entity:
         self.color = color
         self.name = name
         self.blocks_movement = blocks_movement
+        self.render_order = render_order
         if gamemap:
            # If gamemap isn't provided now then it will be set later.
            self.gamemap = gamemap
@@ -64,14 +68,6 @@ class Entity:
         self.x += dx
         self.y += dy
 
-
-class Frisbee(Entity):
-    def __init__(self, damage:int, x:int, y:int, dx:int, dy:int, char: str, color: Tuple[int, int, int]):
-        super().__init__(x=x,y=y,char=char,color=color)
-        self.dx = dx
-        self.dy = dy
-        self.damage = damage
-    
    
 class Actor(Entity):
     def __init__(
@@ -83,7 +79,7 @@ class Actor(Entity):
         color: Tuple[int, int, int] = (255, 255, 255), 
         name: str = "<Unnamed>", 
         ai_cls: Type[BaseAI],
-        fighter: Fighter,
+        component: BaseComponent,
     ):
         super().__init__(
             x=x, 
@@ -92,12 +88,13 @@ class Actor(Entity):
             color=color, 
             name=name, 
             blocks_movement=True,
+            render_order=RenderOrder.ACTOR,
         )
         
         self.ai: Optional[BaseAI] = ai_cls(self)
 
-        self.fighter = fighter
-        self.fighter.entity = self
+        self.component = component
+        self.component.entity = self
 
     @property
     def is_alive(self) -> bool:

@@ -4,10 +4,10 @@ from typing import Optional, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from engine import Engine
-    from entity import Entity
+    from entity import Actor, Entity
 
 class Action:
-    def __init__(self, entity: Entity) -> None:
+    def __init__(self, entity: Actor) -> None:
         super().__init__()
         self.entity = entity
 
@@ -36,7 +36,7 @@ class WaitAction(Action):
         pass
 
 class ActionWithDirection(Action):
-    def __init__(self, entity: Entity, dx: int, dy: int):
+    def __init__(self, entity: Actor, dx: int, dy: int):
         super().__init__(entity)
 
         self.dx = dx
@@ -52,16 +52,32 @@ class ActionWithDirection(Action):
         """Return the blocking entity at this actions destination"""
         return self.engine.game_map.get_blocking_entity_at_location(*self.dest_xy)
     
+    @property
+    def target_actor(self) -> Optional[Actor]:
+        """Return the actor at this actions destination."""
+        return self.engine.game_map.get_actor_at_location(*self.dest_xy)
+
     def perform(self) -> None:
         raise NotImplementedError()
     
-class MeleeAction(ActionWithDirection):
+class AttackAction(ActionWithDirection):
     def perform(self) -> None:
-        target = self.blocking_entity
+        target = self.target_actor
         if not target:
             return # No entity to attack.
+        
+        if target.name == "Frisbee": 
+            return # Don't attack frisbees!
 
-        print(f"You kick the {target.name}, much to its annoyance!")
+        damage = self.entity.component.power - target.component.defense
+
+        attack_desc = f"{self.entity.name.capitalize()} attacks {target.name}"
+        if damage > 0:
+            print(f"{attack_desc} for {damage} hit points.")
+            target.component.hp -= damage
+        else:
+            print(f"{attack_desc} but does no damage.")
+
 
 class MovementAction(ActionWithDirection):
     def perform(self) -> None:
@@ -78,31 +94,12 @@ class MovementAction(ActionWithDirection):
         
 class BumpAction(ActionWithDirection):
     def perform(self) -> None:
-        if self.blocking_entity:
-            return MeleeAction(self.entity, self.dx, self.dy).perform()
+        if self.target_actor:
+            return AttackAction(self.entity, self.dx, self.dy).perform()
         else:
             return MovementAction(self.entity, self.dx, self.dy).perform()
-        
-class ProjectileAction(ActionWithDirection):
-    def perform(self) -> None:
-        dest_x, dest_y = self.dest_xy
-
-        if not self.engine.game_map.in_bounds(dest_x, dest_y) or not self.engine.game_map.tiles["walkable"][dest_x,dest_y]:
-            self.engine.game_map.remove_entites.add(self.entity)
-            return # Destination out of bounds, so end projectile
-
-        #Check if there is an enemy in destination, if so then we damage the enemy and remove projectile
-        entity_detected = self.blocking_entity
-        if entity_detected != None:
-            entity_detected .health -= entity_detected .damage
-            self.engine.game_map.remove_entites.add(self.entity)
-
-
-        self.entity.move(self.dx, self.dy)
-
+       
 class ShootAction(ActionWithDirection):
     def perform(self) -> None:
-        from entity import Frisbee
-        projectile = Frisbee(damage=1, x=self.entity.x, y=self.entity.y, dx=self.dx, dy=self.dy, char="O", color=[56,0,56])
-        projectile.place(self.dx, self.dy, self.engine.game_map)
-        self.engine.game_map.entities.add(projectile)
+        import entity_factories
+        entity_factories.frisbee.spawn(self.entity.gamemap, x=self.entity.x, y=self.entity.y)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!C:\venv\UltimateFrisbeeHunter\Scripts\python.exe
 import copy
 import tcod
 
