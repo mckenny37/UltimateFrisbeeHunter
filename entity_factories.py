@@ -15,7 +15,7 @@ frisbee = Actor(
     color=(75,0,130),
     name="Frisbee",
     ai_cls=Projectile,
-    component=Frisbee(power=5, dx=0, dy=-1),
+    component=Frisbee(power=player.component.power, dx=0, dy=-1),
 )
 orc = Actor(
     char="O",
