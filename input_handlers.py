@@ -108,7 +108,7 @@ class MainGameEventHandler(EventHandler):
         elif key == (tcod.event.K_q):
             action = ShootAction(player, dx=0, dy=-1)
         elif key == (tcod.event.K_ESCAPE):
-            action = EscapeAction()
+            action = EscapeAction(player)
         elif key == tcod.event.K_v:
             self.engine.event_handler = HisotryViewer(self.engine)
         # No valid key was pressed
