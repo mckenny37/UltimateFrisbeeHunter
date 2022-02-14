@@ -8,12 +8,12 @@ from render_order import RenderOrder
 if TYPE_CHECKING:
     from entity import Actor
 
+
 class Frisbee(ActorComponent):
-    entity: Actor
+    parent_entity: Actor
 
     def __init__(self, dx: int, dy: int, power: int):
         self.power = power
         self.dx = dx
         self.dy = dy
         self.blocks_movement = False
-     
