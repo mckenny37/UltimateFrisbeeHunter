@@ -34,12 +34,6 @@ class Engine:
                 except exceptions.Impossible:
                     pass  # Ignore impossible action exceptions from AI.
 
-    def refresh_entities(self) -> None:
-        for entity in self.game_map.remove_entites:
-            self.game_map.entities.remove(entity)
-
-        self.game_map.remove_entites.clear()
-
     def update_fov(self) -> None:
         """Recompute the visible area based on the players point of view."""
         self.game_map.visible[:] = compute_fov(

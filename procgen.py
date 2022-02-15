@@ -1,8 +1,9 @@
 from __future__ import annotations
+from os import remove
 
 import random
 from telnetlib import GA
-from typing import Iterator, Tuple, List, TYPE_CHECKING
+from typing import Iterator, Optional, Tuple, List, TYPE_CHECKING
 
 import tcod
 
@@ -12,6 +13,7 @@ import tile_types
 
 if TYPE_CHECKING:
     from engine import Engine
+    from entity import Entity
 
 
 class RectangularRoom:
@@ -128,10 +130,14 @@ def generate_dungeon(
 
     # Place boss in center of last room, if entity is there remove
     boss_x, boss_y = rooms[-1].center
+    remove_entity: Optional[Entity] = None
     for ent in dungeon.entities:
         if [ent.x, ent.y] == [boss_x, boss_y]:
-            dungeon.remove_entites.add(ent)
+            remove_entity = ent
             break
+
+    if remove_entity != None:
+        dungeon.entities.remove(remove_entity)
 
     entity_factories.boss.spawn(dungeon, boss_x, boss_y)
 

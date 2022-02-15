@@ -16,4 +16,3 @@ class Frisbee(ActorComponent):
         self.power = power
         self.dx = dx
         self.dy = dy
-        self.blocks_movement = False

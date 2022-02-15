@@ -18,6 +18,7 @@ frisbee = Actor(
     char="o",
     color=(75, 0, 130),
     name="Frisbee",
+    blocks_movment=False,
     ai_cls=Projectile,
     component=Frisbee(power=player.component.power, dx=0, dy=-1),
 )

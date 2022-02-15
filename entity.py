@@ -1,15 +1,15 @@
 from __future__ import annotations
 
 import copy
-from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING
+from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING, Union
 from components.base_component import BaseComponent
+from components.inventory import Inventory
 
 from render_order import RenderOrder
 
 if TYPE_CHECKING:
     from components.ai import BaseAI
     from components.consumable import Consumable
-    from components.inventory import Inventory
     from game_map import GameMap
 
 T = TypeVar("T", bound="Entity")
@@ -20,7 +20,7 @@ class Entity:
     A generic object to represent players, enemies, items, etc.
     """
 
-    parent: GameMap
+    parent: Union[GameMap, Inventory]
 
     def __init__(
         self,
@@ -56,7 +56,8 @@ class Entity:
         self.y = y
         if gamemap:
             if hasattr(self, "parent"):  # Possibly uninitialized.
-                self.gamemap.entities.remove(self)
+                if self.parent is self.gamemap:
+                    self.gamemap.entities.remove(self)
             self.parent = gamemap
             gamemap.entities.add(self)
 
@@ -84,9 +85,10 @@ class Actor(Entity):
         char: str = "?",
         color: Tuple[int, int, int] = (255, 255, 255),
         name: str = "<Unnamed>",
+        blocks_movment: bool = True,
         ai_cls: Type[BaseAI],
         component: BaseComponent,
-        inventory: Inventory,
+        inventory: Inventory = Inventory(capacity=0),
     ):
         super().__init__(
             x=x,
@@ -94,7 +96,7 @@ class Actor(Entity):
             char=char,
             color=color,
             name=name,
-            blocks_movement=True,
+            blocks_movement=blocks_movment,
             render_order=RenderOrder.ACTOR,
         )
 
