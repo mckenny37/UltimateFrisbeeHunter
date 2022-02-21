@@ -1,9 +1,11 @@
 from __future__ import annotations
+from msilib.schema import Component
 
 from typing import Iterable, Iterator, Optional, TYPE_CHECKING
 
 import numpy as np  # type: ignore
 from tcod.console import Console
+from components.fighter import Fighter
 
 from entity import Actor, Item
 import tile_types
@@ -33,6 +35,11 @@ class GameMap:
     @property
     def gamemap(self) -> GameMap:
         return self
+
+    @property
+    def fighters(self) -> Iterator[Actor]:
+        """Iterate over this maps living fighters."""
+        yield from (actor for actor in self.actors if isinstance(actor.component, Fighter) and actor.is_alive)
 
     @property
     def actors(self) -> Iterator[Actor]:
