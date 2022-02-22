@@ -28,23 +28,35 @@ orc = Actor(
     color=(63, 127, 63),
     name="Orc",
     ai_cls=HostileEnemy,
-    component=Fighter(hp=10, defense=0, power=3)
+    component=Fighter(hp=10, defense=0, power=3),
 )
 troll = Actor(
     char="T",
     color=(0, 127, 0),
     name="Troll",
     ai_cls=HostileEnemy,
-    component=Fighter(hp=16, defense=1, power=4)
+    component=Fighter(hp=16, defense=1, power=4),
 )
 boss = Actor(
     char="B",
     color=(255, 255, 255),
     name="Boss",
     ai_cls=HostileEnemy,
-    component=Fighter(hp=30, defense=2, power=5)
+    component=Fighter(hp=30, defense=2, power=5),
 )
 
+confusion_scroll = Item(
+    char="~",
+    color=(207, 63, 255),
+    name="Confusion Scroll",
+    consumable=consumable.ConfusionConsumable(number_of_turns=10),
+)
+fireball_scroll = Item(
+    char="~",
+    color=(255, 0, 0),
+    name="Fireball Scroll",
+    consumable=consumable.FireballDamageConsumable(damage=12, radius=3),
+)
 health_potion = Item(
     char="!",
     color=(127, 0, 255),
